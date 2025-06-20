@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+venv/
+
+.directory
+.vscode/
+thumbs.db
+Desktop.ini
+
+/data/
+keys.toml
