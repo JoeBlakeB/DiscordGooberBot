@@ -23,6 +23,7 @@ os.environ["DATA_DIR"] = args.data_dir
 import discord
 from discord.ext import commands
 from app.keys import KeyManager
+from app.picsCleaner import PicsCleaner
 from app.threadManager import ThreadManager
 
 
@@ -48,7 +49,7 @@ async def on_command_error(ctx, error):
 
 async def addCogs(bot):
     for extension in [
-        ThreadManager(bot)
+        PicsCleaner(bot),
     ]:
         await bot.add_cog(extension)
 

@@ -2,6 +2,7 @@
 # All Rights Reserved
 
 import discord
+import datetime
 from discord.ext import commands
 from app.keys import KeyManager
 
@@ -33,6 +34,7 @@ class ThreadManager(commands.Cog):
         for member in viewableMembers:
             try:
                 await thread.add_user(member)
+                await discord.utils.sleep_until(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=0.2))
             except discord.Forbidden:
                 print(f"No permission to add {member}")
             except discord.HTTPException:
