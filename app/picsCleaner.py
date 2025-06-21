@@ -22,15 +22,15 @@ class PicsCleaner(commands.Cog):
             return
 
         parentChannel = message.channel
-        mostRecentMessageThatHasAnImage = None
+        lastMessageWithImg = None
         async for msg in parentChannel.history(limit=100):
             if msg.id == message.id:
                 continue
             if msg.attachments:
-                mostRecentMessageThatHasAnImage = msg
+                lastMessageWithImg = msg
                 break
 
-        if not mostRecentMessageThatHasAnImage: return
+        if not lastMessageWithImg: return
 
         try:
             await message.delete()
@@ -38,19 +38,22 @@ class PicsCleaner(commands.Cog):
             return
 
         thread = None
-        if mostRecentMessageThatHasAnImage.thread:
-            thread = mostRecentMessageThatHasAnImage.thread
+        if lastMessageWithImg.thread:
+            thread = lastMessageWithImg.thread
         else:
-            messageContent = mostRecentMessageThatHasAnImage.content[:64] or ((
-                f"{mostRecentMessageThatHasAnImage.author.name}'s photo" if any(a.content_type and (
-                    a.content_type.startswith("image/")
-                ) for a in mostRecentMessageThatHasAnImage.attachments) else (
-                    f"{mostRecentMessageThatHasAnImage.author.name}'s video" if any(a.content_type and (
-                        a.content_type.startswith("video/")
-                    ) for a in mostRecentMessageThatHasAnImage.attachments) else f"Thread for {mostRecentMessageThatHasAnImage.author.name}'s message"
-                )
-            ))
-            thread = await mostRecentMessageThatHasAnImage.create_thread(name=messageContent[:800])
+            hasPhoto = any(a.content_type and a.content_type.startswith("image/") for a in lastMessageWithImg.attachments)
+            hasVideo = any(a.content_type and a.content_type.startswith("video/") for a in lastMessageWithImg.attachments)
+
+            if lastMessageWithImg.content:
+                messageContent = lastMessageWithImg.content[:64]
+            elif hasPhoto:
+                messageContent = f"{lastMessageWithImg.author.name}'s photo"
+            elif hasVideo:
+                messageContent = f"{lastMessageWithImg.author.name}'s video"
+            else:
+                messageContent = f"Thread for {lastMessageWithImg.author.name}'s message"
+
+            thread = await lastMessageWithImg.create_thread(name=messageContent[:800])
 
         await thread.join()
 
