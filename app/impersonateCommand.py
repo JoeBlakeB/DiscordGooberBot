@@ -27,12 +27,14 @@ class ImpersonateCommand(commands.Cog):
             except discord.Forbidden:
                 return print(f"Failed to create webhook in channel {webhookChannel.id}. Check permissions.")
 
+        print(f"{ctx.author} impersonated {user} in {targetChannel} with message: {message}")
+
         try:
             await webhook.send(
                 content=message,
                 username=user.display_name,
                 avatar_url=user.display_avatar.url,
-                thread=targetChannel if isinstance(targetChannel, discord.Thread) else None
+                **({"thread": targetChannel} if isinstance(targetChannel, discord.Thread) else {})
             )
         except discord.HTTPException as e:
             print(f"Failed to send webhook message: {e}")

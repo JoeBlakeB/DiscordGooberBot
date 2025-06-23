@@ -31,7 +31,7 @@ class KeyManager:
             else:
                 self._keys = {}
 
-    def get(self, name):
+    def get(self, name, default=None):
         """Get the value of a key from the keys.toml file.
         Records if they key is not in the file, this should be called during app initialisation.
 
@@ -43,6 +43,8 @@ class KeyManager:
         """
         if self._keys.get(name, None):
             return self._keys[name]
+        elif default is not None:
+            return default
         else:
             self._missing.append(name)
             self._missingTraces.append(traceback.format_stack()[-2].strip())

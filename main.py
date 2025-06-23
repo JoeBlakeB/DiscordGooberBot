@@ -34,7 +34,8 @@ intents.members = True
 intents.messages = True
 intents.guild_messages = True
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+COMMAND_PREFIX = KeyManager().get("COMMAND_PREFIX", "!")
+bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents)
 
 DISCORD_BOT_TOKEN = KeyManager().get("DISCORD_BOT_TOKEN")
 
