@@ -17,18 +17,24 @@ class PicsCleaner(commands.Cog):
     async def on_message(self, message: discord.Message):
         if message.author.bot or message.channel.id != PICS_CHANNEL_ID:
             return
+        
+        if message.type == discord.MessageType.thread_created:
+            return
 
         if message.attachments:
             return
 
         parentChannel = message.channel
-        lastMessageWithImg = None
-        async for msg in parentChannel.history(limit=100):
-            if msg.id == message.id:
-                continue
-            if msg.attachments:
-                lastMessageWithImg = msg
-                break
+        if message.reference and message.reference.resolved:
+            lastMessageWithImg = message.reference.resolved
+        else:
+            lastMessageWithImg = None
+            async for msg in parentChannel.history(limit=100):
+                if msg.id == message.id:
+                    continue
+                if msg.attachments:
+                    lastMessageWithImg = msg
+                    break
 
         if not lastMessageWithImg: return
 
