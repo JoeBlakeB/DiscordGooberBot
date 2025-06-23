@@ -24,7 +24,7 @@ import discord
 from discord.ext import commands
 from app.keys import KeyManager
 from app.picsCleaner import PicsCleaner
-from app.threadManager import ThreadManager
+from app.impersonateCommand import ImpersonateCommand
 
 
 intents = discord.Intents.default()
@@ -50,6 +50,7 @@ async def on_command_error(ctx, error):
 async def addCogs(bot):
     for extension in [
         PicsCleaner(bot),
+        ImpersonateCommand(bot),
     ]:
         await bot.add_cog(extension)
 
