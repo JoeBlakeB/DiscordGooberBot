@@ -85,8 +85,8 @@ class PicsCleaner(commands.Cog):
             if lastMessageWithImg.content:
                 messageContent = lastMessageWithImg.content.replace("\n", " ")
                 for user in lastMessageWithImg.mentions:
-                    messageContent = messageContent.replace(f"<@{user.id}>", f"@{user.display_name}")
-                    messageContent = messageContent.replace(f"<@!{user.id}>", f"@{user.display_name}")
+                    messageContent = messageContent.replace(f"<@{user.id}>", f"{user.display_name}")
+                    messageContent = messageContent.replace(f"<@!{user.id}>", f"{user.display_name}")
 
                 for word in messageContent.split():
                     if word.startswith("http://") or word.startswith("https://"):
