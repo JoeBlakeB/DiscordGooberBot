@@ -2,11 +2,41 @@
 # All Rights Reserved
 
 import discord
+import re
 from discord.ext import commands
 from app.keys import KeyManager
 
 
 PICS_CHANNEL_ID = KeyManager().get("PICS_CHANNEL_ID")
+
+
+def isAttachmentMessage(message):
+    text = message.content.strip()
+    match = re.search(r"https?://\S+", text)
+    if not match:
+        return False
+
+    url = match.group(0)
+
+    if url.lower().endswith(".gif"):
+        return False
+
+    blockedDomains = [
+        "giphy.com",
+        "tenor.com",
+        "imgur.com",
+        "reddit.com",
+        "i.redd.it",
+        "media.giphy.com",
+        "media.tenor.com",
+        "gfycat.com"
+    ]
+
+    for domain in blockedDomains:
+        if domain in url.lower():
+            return False
+
+    return True
 
 
 class PicsCleaner(commands.Cog):
@@ -15,13 +45,14 @@ class PicsCleaner(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        if message.author.bot or message.channel.id != PICS_CHANNEL_ID:
-            return
-        
-        if message.type == discord.MessageType.thread_created:
+        if message.author.bot or str(message.channel.id) != str(PICS_CHANNEL_ID):
             return
 
-        if message.attachments:
+        if message.type == discord.MessageType.thread_created:
+            await message.delete(delay=900)
+            return
+
+        if message.attachments or isAttachmentMessage(message):
             return
 
         parentChannel = message.channel
@@ -32,7 +63,7 @@ class PicsCleaner(commands.Cog):
             async for msg in parentChannel.history(limit=100):
                 if msg.id == message.id:
                     continue
-                if msg.attachments:
+                if msg.attachments or isAttachmentMessage(msg):
                     lastMessageWithImg = msg
                     break
 
@@ -50,8 +81,31 @@ class PicsCleaner(commands.Cog):
             hasPhoto = any(a.content_type and a.content_type.startswith("image/") for a in lastMessageWithImg.attachments)
             hasVideo = any(a.content_type and a.content_type.startswith("video/") for a in lastMessageWithImg.attachments)
 
+            messageContentWithoutLinks = ""
             if lastMessageWithImg.content:
-                messageContent = lastMessageWithImg.content[:64]
+                messageContent = lastMessageWithImg.content.replace("\n", " ")
+                for user in lastMessageWithImg.mentions:
+                    messageContent = messageContent.replace(f"<@{user.id}>", f"@{user.display_name}")
+                    messageContent = messageContent.replace(f"<@!{user.id}>", f"@{user.display_name}")
+
+                for word in messageContent.split():
+                    if word.startswith("http://") or word.startswith("https://"):
+                        continue
+
+                    if word.startswith("<#") and word.endswith(">"):
+                        try:
+                            channel = message.guild.get_channel(int(word[2:-1]))
+                            if channel:
+                                messageContentWithoutLinks += f"#{channel.name} "
+                            else:
+                                messageContentWithoutLinks += word + " "
+                        except Exception: pass
+                        continue
+
+                    messageContentWithoutLinks += word + " "
+
+            if messageContentWithoutLinks:
+                messageContent = messageContentWithoutLinks[:64].strip()
             elif hasPhoto:
                 messageContent = f"{lastMessageWithImg.author.name}'s photo"
             elif hasVideo:
