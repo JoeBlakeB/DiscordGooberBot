@@ -25,6 +25,7 @@ from discord.ext import commands
 from app.keys import KeyManager
 from app.picsCleaner import PicsCleaner
 from app.impersonateCommand import ImpersonateCommand
+from app.taranNickname import TarenNickChanger
 
 
 intents = discord.Intents.default()
@@ -52,6 +53,7 @@ async def addCogs(bot):
     for extension in [
         PicsCleaner(bot),
         ImpersonateCommand(bot),
+        TarenNickChanger(bot)
     ]:
         await bot.add_cog(extension)
 
