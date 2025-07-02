@@ -8,21 +8,16 @@ Manages API keys and other secrets in a TOML file
 import os
 import tomllib
 import traceback
+from .singleton import Singleton
 
 KEYS_FILE_PATH = os.path.join(os.environ.get("DATA_DIR", os.path.dirname(os.path.dirname(__file__))), "keys.toml")
 
 
-class KeyManager:
+class KeyManager(metaclass=Singleton):
     _instance = None
-    _keys = None
     _missing = []
     _missingTraces = []
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(KeyManager, cls).__new__(cls)
-        return cls._instance
-    
     def __init__(self):
         if self._keys is None:
             if os.path.exists(KEYS_FILE_PATH):
