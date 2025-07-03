@@ -14,15 +14,11 @@ EXCLUDED_NAMES = {
     "Thanks", "Thank", "Today", "Tomorrow", "Tonight", "Tuesday",
     "Time", "Told", "Tell", "Takes", "Taking", "Tried", "Trying",
     "Turns", "Turned", "Turn", "Talk", "Talked", "Talking", "Thing",
-    "Things", "Too", "Took", "Through", "Threw", "To", "The", "Truth",
-    "Trust", "Try", "Tired", "Team", "Touch", "Top", "Text", "Tweet",
-    "Tag", "Tense", "Tone",
-    "Taylor", "Tesco", "TikTok", "Twitter", "Twitch", "Tumblr",
-    "Tesla", "Toyota", "Tommy", "Tina", "Tony", "Thomas", "Theodore",
-    "Tolkien", "Travis", "Toronto", "Texas", "Turkey", "Thailand",
-    "Tunisia", "Taiwan", "Tennessee", "Telstra", "Target", "Toshiba",
+    "Things", "Too", "Took", "Through", "Threw", "To", "The",
+    "Taylor", "TikTok", "Twitter", "Twitch", "Tumblr", 
+    "Tesla", "Toyota", "Texas", "Turkey", "Thailand",
     "Tuesday", "Thursday", "Today", "Tomorrow",
-    "Terminal", "Task", "Thread", "Token", "Tensor", "Type", "Timeout"
+    "Thread",
 }
 
 class TarenNickChanger(commands.Cog):
