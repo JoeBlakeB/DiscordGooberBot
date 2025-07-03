@@ -14,7 +14,7 @@ KEYS_FILE_PATH = os.path.join(os.environ.get("DATA_DIR", os.path.dirname(os.path
 
 
 class KeyManager(metaclass=Singleton):
-    _instance = None
+    _keys = None
     _missing = []
     _missingTraces = []
 
