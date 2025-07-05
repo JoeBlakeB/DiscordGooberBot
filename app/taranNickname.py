@@ -10,7 +10,7 @@ TAREN_USER_ID = int(KeyManager().get("TAREN_USER_ID"))
 
 MISSPELLING_REGEX = r"\bT[a-z]{3,}\b"
 EXCLUDED_NAMES = {
-    "This", "That", "There", "These", "Those", "Then", "Though",
+    "This", "That", "There", "These", "Those", "Then", "Though", "They", "Them", "Theirs",
     "Thanks", "Thank", "Today", "Tomorrow", "Tonight", "Tuesday",
     "Time", "Told", "Tell", "Takes", "Taking", "Tried", "Trying",
     "Turns", "Turned", "Turn", "Talk", "Talked", "Talking", "Thing",
