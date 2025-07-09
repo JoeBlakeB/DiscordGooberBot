@@ -71,14 +71,17 @@ class PicsCleaner(commands.Cog):
 
                 messageContentWithoutLinks += word + " "
 
+        nickname = threadCreationMessage.author.display_name.strip()
+        nickname = re.sub(r"\s*[\(\[\{].*?[\)\]\}]", "", nickname)
+
         if messageContentWithoutLinks:
             messageContent = messageContentWithoutLinks[:64].strip()
         elif any(hasPhoto):
-            messageContent = f"{threadCreationMessage.author.name}'s photo" + ("s" if sum(hasPhoto) > 1 else "")
+            messageContent = f"{nickname}'s photo" + ("s" if sum(hasPhoto) > 1 else "")
         elif any(hasVideo):
-            messageContent = f"{threadCreationMessage.author.name}'s video" + ("s" if sum(hasVideo) > 1 else "")
+            messageContent = f"{nickname}'s video" + ("s" if sum(hasVideo) > 1 else "")
         else:
-            messageContent = f"Thread for {threadCreationMessage.author.name}'s message"
+            messageContent = f"Thread for {nickname}'s message"
         
         return messageContent[:100].strip()
 
