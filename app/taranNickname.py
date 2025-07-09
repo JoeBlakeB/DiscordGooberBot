@@ -5,6 +5,7 @@ import discord
 import re
 from discord.ext import commands
 from app.keys import KeyManager
+from app.utils import print_flush
 
 TAREN_USER_ID = int(KeyManager().get("TAREN_USER_ID"))
 
@@ -49,12 +50,12 @@ class TarenNickChanger(commands.Cog):
 
         try:
             if taren.nick != possible_nick:
-                await taren.edit(nick=possible_nick, reason=f"Auto-nick for '{possible_nick}' found in chat")
-                print(f"Changed Taren's nickname to {possible_nick} because message from {message.author.name}: {message.content}")
+                await taren.edit(nick=possible_nick, reason=f"Auto-nick for '{possible_nick}' found in chat because message from {message.author.name}: {message.content}")
+                print_flush(f"Changed Taren's nickname to {possible_nick} because message from {message.author.name}: {message.content}")
         except discord.Forbidden:
-            print("Missing permission to change nickname.")
+            print_flush("Missing permission to change nickname.")
         except Exception as e:
-            print(f"Error changing nickname: {e}")
+            print_flush(f"Error changing nickname: {e}")
 
     async def setup(self, bot):
         await bot.add_cog(self)
