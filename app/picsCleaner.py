@@ -71,19 +71,20 @@ class PicsCleaner(commands.Cog):
 
                 messageContentWithoutLinks += word + " "
 
-        nickname = threadCreationMessage.author.display_name.strip()
-        nickname = re.sub(r"\s*[\(\[\{].*?[\)\]\}]", "", nickname)
+        nickname = threadCreationMessage.author.display_name
+        nickname = re.sub(r"\s*[\(\[\{].*?[\)\]\}]", "", nickname).strip()
 
         if messageContentWithoutLinks:
-            messageContent = messageContentWithoutLinks[:64].strip()
+            messageContentWithoutLinks = re.sub(r"\s*[\<].*?[\>]", " ", messageContentWithoutLinks)
+            threadName = messageContentWithoutLinks[:64].strip()
         elif any(hasPhoto):
-            messageContent = f"{nickname}'s photo" + ("s" if sum(hasPhoto) > 1 else "")
+            threadName = f"{nickname}'s photo" + ("s" if sum(hasPhoto) > 1 else "")
         elif any(hasVideo):
-            messageContent = f"{nickname}'s video" + ("s" if sum(hasVideo) > 1 else "")
+            threadName = f"{nickname}'s video" + ("s" if sum(hasVideo) > 1 else "")
         else:
-            messageContent = f"Thread for {nickname}'s message"
+            threadName = f"Thread for {nickname}'s message"
         
-        return messageContent[:100].strip()
+        return threadName[:100].strip()
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
