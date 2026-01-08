@@ -12,7 +12,7 @@ import traceback
 KEYS_FILE_PATH = os.path.join(os.environ.get("DATA_DIR", os.path.dirname(os.path.dirname(__file__))), "keys.toml")
 
 
-class KeyManager(metaclass=Singleton):
+class KeyManager:
     _instance = None
     _keys = None
     _missing = []
