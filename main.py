@@ -29,6 +29,7 @@ from app.keys import KeyManager
 from app.picsCleaner import PicsCleaner
 from app.impersonateCommand import ImpersonateCommand
 from app.taranNickname import TarenNickChanger
+from app.ttsCommand import TTSCommand
 from app.clearCommand import ClearCommand
 
 
@@ -59,6 +60,7 @@ async def addCogs(bot):
         ImpersonateCommand(bot),
         TarenNickChanger(bot),
         ClearCommand(bot),
+        TTSCommand(bot),
     ]
     for cog in cogs:
         await bot.add_cog(cog)
