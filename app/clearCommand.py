@@ -2,7 +2,8 @@
 # All Rights Reserved
 
 import discord
-from discord.ext import commands
+import time
+from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 from app.keys import KeyManager
 import asyncio
@@ -15,9 +16,13 @@ class ClearCommand(commands.Cog):
 
     def __init__(self, bot: discord.Client):
         self.bot = bot
+        self.autoClear.start()
 
     async def setup(self, bot):
         await bot.add_cog(self)
+
+    def cog_unload(self):
+        self.autoClear.cancel()
 
     @commands.command(name="clear")
     async def clear(self, ctx: commands.Context):
@@ -51,25 +56,48 @@ class ClearCommand(commands.Cog):
             await reply.edit(content="Confirmation Failed")
             return
 
+        await reply.edit(content="Starting to delete messages")
+        print(f"Clearing messages from channel #{ctx.channel.id}")
+        threshold = datetime.now() - timedelta(days=3)
+        messagesDeleted = await self._delete_messages(ctx.channel, threshold)
 
+        await reply.edit(content="Deletion complete, deleted " + str(messagesDeleted) + " messages")
 
-        last_week = datetime.now() - timedelta(days=3)
-        messages = ctx.channel.history(
-            before=last_week,
+    async def _delete_messages(self, channel, beforeTime: datetime) -> int:
+        """Delete messages in `channel` older than `beforeTime`, skipping pinned messages."""
+        messages = channel.history(
+            before=beforeTime,
             oldest_first=True,
         )
 
-        await reply.edit(content="Starting to delete messages")
-        print(f"Clearing messages from channel #{ctx.channel.id}")
+        timeoutAt = time.time() + (60 * 45)
+        messagesDeleted = 0
+
         async for message in messages:
+            if time.time() > timeoutAt:
+                print("Message deletion timed out")
+                break
             try:
                 if message.pinned:
                     continue
                 await message.delete()
+                messagesDeleted += 1
                 await asyncio.sleep(1)
             except Exception as e:
                 print(e)
                 pass
+        
+        print(f"Deleted {messagesDeleted} messages from #{channel.id}")
+        return messagesDeleted
 
-        await reply.edit(content="Deletion Complete")
+    @tasks.loop(minutes=1)
+    async def autoClear(self):
+        await self.bot.wait_until_ready()
+        channel = self.bot.get_channel(CLEAR_CHANNEL_ID)
+        if channel is None:
+            return print("Error: auto clear channel not found")
+
+        threshold = datetime.now() - timedelta(days=30)
+        print(f"Auto-clearing messages in #{channel.id}")
+        await self._delete_messages(channel, threshold)
 
