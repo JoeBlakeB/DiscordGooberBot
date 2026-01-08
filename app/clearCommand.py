@@ -7,6 +7,7 @@ from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 from app.keys import KeyManager
 import asyncio
+from app.utils import print_flush
 
 
 CLEAR_CHANNEL_ID = int(KeyManager().get("CLEAR_CHANNEL_ID", "0"))
@@ -57,7 +58,7 @@ class ClearCommand(commands.Cog):
             return
 
         await reply.edit(content="Starting to delete messages")
-        print(f"Clearing messages from channel #{ctx.channel.id}")
+        print_flush(f"Clearing messages from channel #{ctx.channel.id}")
         threshold = datetime.now() - timedelta(days=3)
         messagesDeleted = await self._delete_messages(ctx.channel, threshold)
 
@@ -75,7 +76,7 @@ class ClearCommand(commands.Cog):
 
         async for message in messages:
             if time.time() > timeoutAt:
-                print("Message deletion timed out")
+                print_flush("Message deletion timed out")
                 break
             try:
                 if message.pinned:
@@ -84,10 +85,10 @@ class ClearCommand(commands.Cog):
                 messagesDeleted += 1
                 await asyncio.sleep(1)
             except Exception as e:
-                print(e)
+                print_flush(e)
                 pass
         
-        print(f"Deleted {messagesDeleted} messages from #{channel.id}")
+        print_flush(f"Deleted {messagesDeleted} messages from #{channel.id}")
         return messagesDeleted
 
     @tasks.loop(hours=24)
@@ -95,9 +96,9 @@ class ClearCommand(commands.Cog):
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(CLEAR_CHANNEL_ID)
         if channel is None:
-            return print("Error: auto clear channel not found")
+            return print_flush("Error: auto clear channel not found")
 
         threshold = datetime.now() - timedelta(days=30)
-        print(f"Auto-clearing messages in #{channel.id}")
+        print_flush(f"Auto-clearing messages in #{channel.id}")
         await self._delete_messages(channel, threshold)
 
