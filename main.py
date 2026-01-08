@@ -57,7 +57,7 @@ async def addCogs(bot):
     cogs = [
         PicsCleaner(bot),
         ImpersonateCommand(bot),
-        TarenNickChanger(bot)
+        TarenNickChanger(bot),
         ClearCommand(bot),
     ]
     for cog in cogs:

@@ -63,6 +63,8 @@ class ClearCommand(commands.Cog):
         print(f"Clearing messages from channel #{ctx.channel.id}")
         async for message in messages:
             try:
+                if message.pinned:
+                    continue
                 await message.delete()
                 await asyncio.sleep(1)
             except Exception as e:
