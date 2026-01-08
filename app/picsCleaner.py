@@ -92,7 +92,7 @@ class PicsCleaner(commands.Cog):
             return
 
         if message.type in (discord.MessageType.thread_created, discord.MessageType.pins_add):
-            await message.delete(delay=900)
+            await message.delete(delay=30)
             return
 
         if message.attachments or isAttachmentMessage(message) or message.content.strip() == "":
@@ -106,7 +106,7 @@ class PicsCleaner(commands.Cog):
             async for msg in parentChannel.history(limit=100):
                 if msg.id == message.id:
                     continue
-                if msg.attachments or isAttachmentMessage(msg):
+                if msg.attachments or isAttachmentMessage(msg) or msg.content.strip() == "":
                     lastMessageWithImg = msg
                     break
 

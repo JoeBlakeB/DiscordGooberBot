@@ -58,9 +58,18 @@ async def addCogs(bot):
         await bot.add_cog(extension)
 
 
+@bot.event
+async def on_ready():
+    print(f'{bot.user} has connected to Discord!')
+
+
+async def setup_hook():
+    await addCogs(bot)
+bot.setup_hook = setup_hook
+
+
 if __name__ == "__main__":
     KeyManager().reportMissingKeys()
 
-    asyncio.run(addCogs(bot))
     bot.run(DISCORD_BOT_TOKEN, reconnect=True)
     
