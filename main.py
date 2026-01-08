@@ -10,9 +10,12 @@ import os
 def parseArgs():
     parser = argparse.ArgumentParser(description="Start the bot with the specified options.")
 
-    parser.add_argument("-d", "--data-dir", default=os.path.join(os.path.dirname(__file__), "data"), 
-                        help="Set the directory where data is stored (default: data)")
-    
+    parser.add_argument(
+        "-d", "--data-dir",
+        default=os.path.join(os.path.dirname(__file__), "data"),
+        help="Set the directory where data is stored (default: data)"
+    )
+
     return parser.parse_args()
 
 
@@ -26,6 +29,7 @@ from app.keys import KeyManager
 from app.picsCleaner import PicsCleaner
 from app.impersonateCommand import ImpersonateCommand
 from app.taranNickname import TarenNickChanger
+from app.clearCommand import ClearCommand
 
 
 intents = discord.Intents.default()
@@ -50,12 +54,14 @@ async def on_command_error(ctx, error):
 
 
 async def addCogs(bot):
-    for extension in [
+    cogs = [
         PicsCleaner(bot),
         ImpersonateCommand(bot),
         TarenNickChanger(bot)
-    ]:
-        await bot.add_cog(extension)
+        ClearCommand(bot),
+    ]
+    for cog in cogs:
+        await bot.add_cog(cog)
 
 
 if __name__ == "__main__":
@@ -63,4 +69,4 @@ if __name__ == "__main__":
 
     asyncio.run(addCogs(bot))
     bot.run(DISCORD_BOT_TOKEN, reconnect=True)
-    
+
