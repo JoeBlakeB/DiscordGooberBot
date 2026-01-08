@@ -10,8 +10,11 @@ import os
 def parseArgs():
     parser = argparse.ArgumentParser(description="Start the bot with the specified options.")
 
-    parser.add_argument("-d", "--data-dir", default=os.path.join(os.path.dirname(__file__), "data"),
-                        help="Set the directory where data is stored (default: data)")
+    parser.add_argument(
+        "-d", "--data-dir",
+        default=os.path.join(os.path.dirname(__file__), "data"),
+        help="Set the directory where data is stored (default: data)"
+    )
 
     return parser.parse_args()
 
@@ -27,6 +30,7 @@ from app.picsCleaner import PicsCleaner
 from app.impersonateCommand import ImpersonateCommand
 from app.taranNickname import TarenNickChanger
 from app.ttsCommand import TTSCommand
+from app.clearCommand import ClearCommand
 
 
 intents = discord.Intents.default()
@@ -51,18 +55,29 @@ async def on_command_error(ctx, error):
 
 
 async def addCogs(bot):
-    for extension in [
+    cogs = [
         PicsCleaner(bot),
         ImpersonateCommand(bot),
         TarenNickChanger(bot),
+        ClearCommand(bot),
         TTSCommand(bot),
-    ]:
-        await bot.add_cog(extension)
+    ]
+    for cog in cogs:
+        await bot.add_cog(cog)
+
+
+@bot.event
+async def on_ready():
+    print(f'{bot.user} has connected to Discord!')
+
+
+async def setup_hook():
+    await addCogs(bot)
+bot.setup_hook = setup_hook
 
 
 if __name__ == "__main__":
     KeyManager().reportMissingKeys()
 
-    asyncio.run(addCogs(bot))
     bot.run(DISCORD_BOT_TOKEN, reconnect=True)
 
