@@ -70,7 +70,7 @@ class ClearCommand(commands.Cog):
             oldest_first=True,
         )
 
-        timeoutAt = time.time() + (60 * 45)
+        timeoutAt = time.time() + (60 * 60)
         messagesDeleted = 0
 
         async for message in messages:
@@ -90,7 +90,7 @@ class ClearCommand(commands.Cog):
         print(f"Deleted {messagesDeleted} messages from #{channel.id}")
         return messagesDeleted
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(hours=24)
     async def autoClear(self):
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(CLEAR_CHANNEL_ID)
