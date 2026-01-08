@@ -8,7 +8,7 @@ from app.keys import KeyManager
 import asyncio
 
 
-NSFW_CHANNEL_ID = int(KeyManager().get("NSFW_CHANNEL_ID", "0"))
+CLEAR_CHANNEL_ID = int(KeyManager().get("CLEAR_CHANNEL_ID", "0"))
 
 class ClearCommand(commands.Cog):
     bot: discord.Client
@@ -21,7 +21,7 @@ class ClearCommand(commands.Cog):
 
     @commands.command(name="clear")
     async def clear(self, ctx: commands.Context):
-        if ctx.channel.id != NSFW_CHANNEL_ID:
+        if ctx.channel.id != CLEAR_CHANNEL_ID:
             await ctx.reply("You can't do that in this channel")
             return
 
