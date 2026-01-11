@@ -31,6 +31,7 @@ from app.impersonateCommand import ImpersonateCommand
 from app.taranNickname import TarenNickChanger
 from app.ttsCommand import TTSCommand
 from app.clearCommand import ClearCommand
+from app.dmMeower import DmMeower
 
 
 intents = discord.Intents.default()
@@ -61,6 +62,7 @@ async def addCogs(bot):
         TarenNickChanger(bot),
         ClearCommand(bot),
         TTSCommand(bot),
+        DmMeower(bot),
     ]
     for cog in cogs:
         await bot.add_cog(cog)
