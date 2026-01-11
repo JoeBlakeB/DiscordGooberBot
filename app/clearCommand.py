@@ -71,7 +71,7 @@ class ClearCommand(commands.Cog):
             oldest_first=True,
         )
 
-        timeoutAt = time.time() + (60 * 60)
+        timeoutAt = time.time() + (60 * 15)
         messagesDeleted = 0
 
         async for message in messages:
@@ -87,18 +87,18 @@ class ClearCommand(commands.Cog):
             except Exception as e:
                 print_flush(e)
                 pass
-        
+
         print_flush(f"Deleted {messagesDeleted} messages from #{channel.id}")
         return messagesDeleted
 
-    @tasks.loop(hours=24)
+    @tasks.loop(minutes=20)
     async def autoClear(self):
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(CLEAR_CHANNEL_ID)
         if channel is None:
             return print_flush("Error: auto clear channel not found")
 
-        threshold = datetime.now() - timedelta(days=30)
+        threshold = datetime.now() - timedelta(days=7)
         print_flush(f"Auto-clearing messages in #{channel.id}")
         await self._delete_messages(channel, threshold)
 
