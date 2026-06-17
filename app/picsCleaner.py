@@ -112,11 +112,6 @@ class PicsCleaner(commands.Cog):
 
         if not lastMessageWithImg: return
 
-        try:
-            await message.delete()
-        except discord.Forbidden:
-            return
-
         thread = None
         if lastMessageWithImg.thread:
             thread = lastMessageWithImg.thread
@@ -146,6 +141,11 @@ class PicsCleaner(commands.Cog):
             )
         except discord.HTTPException as e:
             print_flush(f"Failed to send webhook message: {e}")
+
+        try:
+            await message.delete()
+        except discord.Forbidden:
+            return
 
     @commands.Cog.listener()
     async def on_thread_create(self, thread: discord.Thread):
