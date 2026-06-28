@@ -75,13 +75,16 @@ class PicsCleaner(commands.Cog):
         nickname = re.sub(r"\s*[\(\[\{].*?[\)\]\}]", "", nickname).strip()
 
         if messageContentWithoutLinks:
-            messageContentWithoutLinks = re.sub(r"\s*[\<].*?[\>]", " ", messageContentWithoutLinks)
+            messageContentWithoutLinks = re.sub(r"<a?:([^:>]+):\d+>", r":\1:", messageContentWithoutLinks)
             threadName = messageContentWithoutLinks[:64].strip()
         elif any(hasPhoto):
             threadName = f"{nickname}'s photo" + ("s" if sum(hasPhoto) > 1 else "")
         elif any(hasVideo):
             threadName = f"{nickname}'s video" + ("s" if sum(hasVideo) > 1 else "")
         else:
+            threadName = None
+        
+        if not threadName:
             threadName = f"Thread for {nickname}'s message"
         
         return threadName[:100].strip()
